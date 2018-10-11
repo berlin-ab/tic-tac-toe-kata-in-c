@@ -3,10 +3,22 @@
 
 #include <stdlib.h>
 
+static const int INVALID_PLAYER = 0;
+static const int GRID_WIDTH = 3;
+
 struct GameData {
 	enum Player current_player;
 	Grid grid;
 };
+
+static void switch_players(Game game) {
+	if (game->current_player == PLAYER_X) {
+		game->current_player = PLAYER_O;
+		return;
+	}
+	
+	game->current_player = PLAYER_X;
+}
 
 struct Turn {
 	Game game;
@@ -14,20 +26,12 @@ struct Turn {
 	int y;
 };
 
-static void switch_players(Game game) {
-	if (game->current_player == PLAYER_X) {
-		game->current_player = PLAYER_O;
-	} else {
-		game->current_player = PLAYER_X;
-	}
-}
-
 static void place_piece(struct Turn turn) {
 	insert_into_grid(
-		turn.game->grid,
-		turn.x,
-		turn.y,
-		(void*)turn.game->current_player);
+		turn.game->grid, 
+		turn.x, 
+		turn.y, 
+		(GridItem) turn.game->current_player);
 }
 
 static bool field_taken(struct Turn turn) {
@@ -37,25 +41,34 @@ static bool field_taken(struct Turn turn) {
 static void take_turn(struct Turn turn) {
 	if (field_taken(turn))
 		return;
-
+	
 	place_piece(turn);
 	switch_players(turn.game);
 }
 
-/*
- * Public
- */
-void take_field(Game game, int x, int y) {
+struct Turn build_turn(Game game, int x, int y) {
 	struct Turn turn;
 	turn.x = x;
 	turn.y = y;
 	turn.game = game;
-	
-	take_turn(turn);
+	return turn;
+}
+
+/*
+ * 
+ * Public
+ * 
+ */
+void take_field(Game game, int x, int y) {
+	take_turn(
+		build_turn(game, x, y)
+		);
 }
 
 enum Player player_at_field(Game game, int x, int y) {
-	return (enum Player) value_in_grid(game->grid, x, y);
+	return ((enum Player) 
+		value_in_grid(
+			game->grid, x, y));
 }
 
 Game new_game() {
@@ -65,17 +78,11 @@ Game new_game() {
 	return game;
 }
 
-const int INVALID_PLAYER = 0; 
-
 bool is_game_over(Game game) {
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++) {
-			if (player_at_field(game, i, j) == INVALID_PLAYER) {
+	for (int x = 0; x < GRID_WIDTH; x++)
+		for (int y = 0; y < GRID_WIDTH; y++)
+			if (player_at_field(game, x, y) == INVALID_PLAYER)
 				return false;
-			}
-		}
-	}
 	
 	return true;
 }

@@ -1,7 +1,8 @@
 build:
 	mkdir -p build/tic-tac-toe-game
 	cp src/tic_tac_toe_game.h build/tic-tac-toe-game/tic_tac_toe_game.h
-	gcc src/tic_tac_toe_game.c \
+	cp src/grid.h build/tic-tac-toe-game/grid.h
+	gcc src/tic_tac_toe_game.c src/array_backed_grid.c \
 		-shared \
 		-I build \
 		-o build/tic-tac-toe-game/tic_tac_toe_game.so

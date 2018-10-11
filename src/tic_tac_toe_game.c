@@ -1,9 +1,11 @@
 #include "tic-tac-toe-game/tic_tac_toe_game.h"
+#include "tic-tac-toe-game/grid.h"
+
 #include <stdlib.h>
 
 struct GameData {
 	enum Player current_player;
-	enum Player plays[9];
+	Grid grid;
 };
 
 struct Turn {
@@ -20,18 +22,16 @@ static void switch_players(Game game) {
 	}
 }
 
-static int position(int x, int y) {
-	return x + (x*2) + y;
-}
-
 static void place_piece(struct Turn turn) {
-	turn.game->plays[
-		position(turn.x, turn.y)
-		] = turn.game->current_player;
+	insert_into_grid(
+		turn.game->grid,
+		turn.x,
+		turn.y,
+		(void*)turn.game->current_player);
 }
 
 static bool field_taken(struct Turn turn) {
-	return turn.game->plays[position(turn.x, turn.y)];
+	return player_at_field(turn.game, turn.x, turn.y);
 }
 
 static void take_turn(struct Turn turn) {
@@ -55,22 +55,27 @@ void take_field(Game game, int x, int y) {
 }
 
 enum Player player_at_field(Game game, int x, int y) {
-	return game->plays[position(x, y)];
+	return (enum Player) value_in_grid(game->grid, x, y);
 }
 
 Game new_game() {
 	Game game = malloc(sizeof(Game));
 	game->current_player = PLAYER_X;
+	game->grid = make_grid();
 	return game;
 }
 
+const int INVALID_PLAYER = 0; 
+
 bool is_game_over(Game game) {
-	for (int i = 0; i < 9; ++i)
+	for (int i = 0; i < 3; i++)
 	{
-		if (game->plays[i] == 0) {
-			return false;
+		for (int j = 0; j < 3; j++) {
+			if (player_at_field(game, i, j) == INVALID_PLAYER) {
+				return false;
+			}
 		}
 	}
-
+	
 	return true;
 }

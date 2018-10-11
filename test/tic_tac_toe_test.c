@@ -45,7 +45,6 @@ Ensure(TicTacToeGame, a_field_can_be_taken_by_o) {
 
 Ensure(TicTacToeGame, a_field_cannot_be_taken_twice) {
 	Game game = new_game();
-
 	take_field(game, 0, 0);
 	take_field(game, 0, 0);
 
@@ -87,8 +86,6 @@ Ensure(TicTacToeGame, a_game_is_over_when_all_fields_are_taken) {
 	assert_that(is_game_over(game),
 		is_equal_to(true));
 }
-
-
 
 int main() {
 	TestSuite *suite = create_test_suite();

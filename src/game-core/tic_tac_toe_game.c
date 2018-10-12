@@ -66,9 +66,15 @@ void take_field(Game game, int x, int y) {
 }
 
 enum Player player_at_field(Game game, int x, int y) {
-	return ((enum Player) 
-		value_in_grid(
-			game->grid, x, y));
+
+	GridItem gridItem = value_in_grid(
+		game->grid, x, y);
+
+	if (gridItem == INVALID_GRID_ITEM) {
+		return (enum Player) INVALID_PLAYER;
+	} else {
+		return (enum Player) gridItem;
+	}
 }
 
 Game new_game() {

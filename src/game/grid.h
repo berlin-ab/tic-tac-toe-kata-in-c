@@ -3,6 +3,7 @@
 
 typedef struct GridData *Grid;
 typedef void *GridItem;
+extern const GridItem INVALID_GRID_ITEM; 
 
 extern Grid make_grid();
 extern void insert_into_grid(Grid grid, int x, int y, GridItem item);

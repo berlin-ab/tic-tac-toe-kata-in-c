@@ -56,16 +56,6 @@ Ensure(TicTacToeGame, a_field_cannot_be_taken_twice) {
 }
 
 
-//Ensure(TicTacToeGame, position) {
-//	assert_that(test_position(1, 0),
-//		is_equal_to(3));
-//	assert_that(test_position(1, 1), 
-//			is_equal_to(4));
-//	assert_that(test_position(2, 0), 
-//			is_equal_to(6));
-//	assert_that(test_position(2, 1), 
-//			is_equal_to(7));
-//}
 
 Ensure(TicTacToeGame, a_game_is_over_when_all_fields_are_taken) {
 	Game game = new_game();
